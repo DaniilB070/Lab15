@@ -1,0 +1,151 @@
+#define _CRT_SECURE_NO_WARNINGS   // чтобы Visual Studio не ругался на scanf
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <locale.h>
+
+#define NAME_SIZE 50
+#define GREETING_SIZE 100
+
+void clear_input_buffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+// ========== ЗАДАНИЕ 1 ==========
+
+void task1_basic(void) {
+    char name[NAME_SIZE];
+    char greeting[GREETING_SIZE];
+
+    puts("Пожалуйста, введите ваше имя: ");
+    scanf("%49s", name);
+
+    strcpy(greeting, "Привет, ");
+    strcat(greeting, name);
+    strcat(greeting, "!");
+
+    puts(greeting);
+}
+
+void task1_uppercase(void) {
+    char name[NAME_SIZE];
+    char greeting[GREETING_SIZE];
+    int i;
+
+    puts("Пожалуйста, введите ваше имя: ");
+    scanf("%49s", name);
+
+    for (i = 0; name[i] != '\0'; i++) {
+        name[i] = (char)toupper((unsigned char)name[i]);
+    }
+
+    strcpy(greeting, "Привет, ");
+    strcat(greeting, name);
+    strcat(greeting, "!");
+
+    puts(greeting);
+}
+
+void task1_pad_exclamation(void) {
+    char name[NAME_SIZE];
+    char greeting[GREETING_SIZE];
+    size_t len;
+
+    puts("Пожалуйста, введите ваше имя: ");
+    scanf("%49s", name);
+
+    strcpy(greeting, "Привет, ");
+    strcat(greeting, name);
+
+    len = strlen(greeting);
+    while (len < 40) {
+        strcat(greeting, "!");
+        len++;
+    }
+
+    puts(greeting);
+    printf("(Длина строки: %zu символов)\n", strlen(greeting));
+}
+
+// ========== ЗАДАНИЕ 2 (только вариант 5 — имя наоборот) ==========
+
+void task2_reverse(void) {
+    char name[NAME_SIZE];
+    char result[NAME_SIZE];
+    size_t len, i;
+
+    puts("Пожалуйста, введите ваше имя: ");
+    scanf("%49s", name);
+
+    len = strlen(name);
+    for (i = 0; i < len; i++) {
+        result[i] = name[len - 1 - i];
+    }
+    result[len] = '\0';
+
+    printf("Привет, %s!\n", result);
+}
+
+// ========== МЕНЮ ==========
+
+void show_task1_menu(void) {
+    int sub;
+    printf("\n=== Задание 1 ===\n");
+    printf("1. Базовый вариант (приветствие)\n");
+    printf("2. Имя заглавными буквами (1.2)\n");
+    printf("3. Добавить '!' до длины 40 (1.3)\n");
+    printf("0. Назад\n");
+    printf("Ваш выбор: ");
+    scanf("%d", &sub);
+    clear_input_buffer();
+
+    switch (sub) {
+        case 1: task1_basic(); break;
+        case 2: task1_uppercase(); break;
+        case 3: task1_pad_exclamation(); break;
+        case 0: return;
+        default: puts("Неверный выбор.");
+    }
+}
+
+int main(void) {
+    setlocale(LC_ALL, "Russian");
+
+    int choice;
+
+    do {
+        printf("\n========================================\n");
+        printf("   Практикум по Си: Строки как массивы\n");
+        printf("========================================\n");
+        printf("1. Задание 1 (приветствие + модификации)\n");
+        printf("2. Задание 2 (имя наоборот)\n");
+        printf("0. Выход\n");
+        printf("Выберите задание: ");
+
+        if (scanf("%d", &choice) != 1) {
+            clear_input_buffer();
+            puts("Ошибка ввода. Попробуйте снова.");
+            continue;
+        }
+        clear_input_buffer();
+
+        switch (choice) {
+            case 1:
+                show_task1_menu();
+                break;
+            case 2:
+                printf("\n=== Задание 2: имя наоборот ===\n");
+                task2_reverse();
+                break;
+            case 0:
+                puts("До свидания!");
+                break;
+            default:
+                puts("Неверный выбор. Попробуйте снова.");
+        }
+    } while (choice != 0);
+
+    return 0;
+}
